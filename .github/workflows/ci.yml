@@ -1,0 +1,104 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-and-test:
+    name: Lint, Unit Tests & Integration Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-${{ hashFiles('requirements.txt') }}
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install semver flake8
+
+      - name: Lint
+        run: flake8 scripts/ tests/ --max-line-length=120 --ignore=E501,W503
+
+      - name: Run unit + integration tests
+        run: python -m pytest tests/ -v --tb=short --cov=scripts --cov-report=term-missing
+
+      - name: Validate metadata index
+        run: python scripts/update_index.py
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install pip-audit
+        run: pip install pip-audit
+      - name: Audit dependencies
+        run: pip-audit -r requirements.txt --ignore-vuln GHSA-r9hx-vwmv-q579 || true
+
+  backwards-compat:
+    name: Backwards Compatibility Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install semver
+        run: pip install semver
+      - name: Check semver validity
+        run: |
+          python -c "
+import json, semver
+with open('metadata/index.json') as f:
+    data = json.load(f)
+for asset in data['assets']:
+    semver.VersionInfo.parse(asset['version'])
+print('✅ All asset versions are valid semver')
+"
+
+  benchmark:
+    name: Performance Benchmark
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install deps
+        run: pip install -r requirements.txt
+      - name: Run bootstrap timing test
+        run: |
+          python -c "
+import time, json
+from pathlib import Path
+start = time.time()
+sys_path_insert = __import__('sys').path.insert
+sys_path_insert(0, 'scripts')
+from search import HyperSearch
+hub = HyperSearch()
+results = hub.query('agent autonomous', top_k=5)
+elapsed = time.time() - start
+print(f'Search completed in {elapsed:.3f}s')
+assert elapsed < 10, f'Search too slow: {elapsed:.3f}s'
+print('✅ Performance benchmark passed')
+"

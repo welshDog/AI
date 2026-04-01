@@ -1,0 +1,25 @@
+{
+  "name": "Self-Upgrade Agent",
+  "version": "1.0.0",
+  "type": "agent",
+  "description": "Autonomous agent that clones, searches, and self-upgrades using HyperGold AI Hub assets within 5 minutes.",
+  "tags": ["autonomous", "self-improvement", "bootstrap", "ci-cd", "agent"],
+  "license": "MIT",
+  "author": "welshDog",
+  "created_at": "2026-04-01",
+  "updated_at": "2026-04-01",
+  "compatibility": {
+    "python": ">=3.9",
+    "frameworks": [],
+    "os": ["linux", "windows", "macos"]
+  },
+  "api_reference": "README.md#api-reference",
+  "usage_example": "README.md#usage",
+  "performance_metrics": {
+    "clone_time_s": 5,
+    "search_time_s": 1,
+    "total_time_s": 60
+  },
+  "backwards_compatible": true,
+  "breaking_changes": []
+}

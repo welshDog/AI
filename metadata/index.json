@@ -1,0 +1,37 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "description": "HyperGold AI Hub global metadata index. Auto-updated by CI/CD on each merge.",
+    "last_updated": "2026-04-01T19:00:00Z",
+    "total_assets": 3
+  },
+  "assets": [
+    {
+      "name": "Self-Upgrade Agent",
+      "path": "agents/self-upgrade-agent/",
+      "type": "agent",
+      "tags": ["autonomous", "self-improvement", "bootstrap", "ci-cd"],
+      "version": "1.0.0",
+      "license": "MIT",
+      "compatibility": {"python": ">=3.9"}
+    },
+    {
+      "name": "HyperSearch Semantic Search Engine",
+      "path": "scripts/search.py",
+      "type": "tool",
+      "tags": ["search", "semantic", "nlp", "faiss", "discovery"],
+      "version": "1.0.0",
+      "license": "MIT",
+      "compatibility": {"python": ">=3.9"}
+    },
+    {
+      "name": "Metrics Dashboard",
+      "path": "dashboard/",
+      "type": "tool",
+      "tags": ["metrics", "dashboard", "analytics", "community"],
+      "version": "1.0.0",
+      "license": "MIT",
+      "compatibility": {"python": ">=3.9"}
+    }
+  ]
+}

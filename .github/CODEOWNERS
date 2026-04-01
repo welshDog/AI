@@ -1,0 +1,10 @@
+# HyperGold AI Hub Code Owners
+# These owners are automatically requested for review on every PR.
+
+* @welshDog
+/frameworks/ @welshDog
+/datasets/ @welshDog
+/models/ @welshDog
+/agents/ @welshDog
+/scripts/ @welshDog
+/.github/ @welshDog
